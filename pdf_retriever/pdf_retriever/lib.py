@@ -23,25 +23,12 @@ class HtmlScraper:
 class Retriever:
 
     @staticmethod
-    def retrieve(pdf_url: str, path_or_buf: str = None) -> Union[bytes, str]:
+    def retrieve(pdf_url: str) -> Union[bytes, str]:
         response = requests.get(pdf_url)
         if response.status_code == 200:
             pass
         else:
             raise requests.exceptions.RequestException(
                 'Status code other than 200 was returned. ({})'.format(response.status_code))
-        if path_or_buf is None:
-            return response.content
-        elif path_or_buf is not None:
-            path = path_or_buf
-            Retriever.__append_ext(path)
-            with open(path_or_buf, mode='wb') as file:
-                file.write(response.content)
-            return path
+        return response.content
 
-    @staticmethod
-    def __append_ext(path: str):
-        if path.endswith('.pdf'):
-            return path + '.pdf'
-        else:
-            return path
