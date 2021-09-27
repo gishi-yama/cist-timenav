@@ -1,7 +1,8 @@
 import json
 
 import requests
-from flask import Flask
+from flask import Flask, jsonify, make_response
+from flask_cors import CORS
 
 from timetable_miner import lib
 
@@ -10,24 +11,20 @@ response = requests.get(url)
 
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
+CORS(app)
 
 
-@app.route('/')
-def outwards_and_returns():
-    return json.dumps(lib.PdfMiner(response.content).outwards_and_returns(),
-                      ensure_ascii=False)
-
-
-@app.route('/outwards')
+@app.route('/outwards', methods=['GET'])
 def outwards():
-    return json.dumps(lib.PdfMiner(response.content).outwards,
-                      ensure_ascii=False)
+    out = lib.PdfMiner(response.content).outwards
+    return make_response(jsonify(out))
 
 
 @app.route('/returns')
 def returns():
-    return json.dumps(lib.PdfMiner(response.content).outwards,
-                      ensure_ascii=False)
+    ret = lib.PdfMiner(response.content).returns
+    return make_response(jsonify(ret))
 
 
 if __name__ == '__main__':
