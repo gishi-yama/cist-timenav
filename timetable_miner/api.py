@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 from timetable_miner import lib
 
-url = 'http://localhost:8081/pdf/bytes'
+url = 'http://172.17.0.2:8081/pdf/bytes'
 response = requests.get(url)
 
 
@@ -28,4 +28,4 @@ def returns():
 
 
 if __name__ == '__main__':
-    app.run(port=8080, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
