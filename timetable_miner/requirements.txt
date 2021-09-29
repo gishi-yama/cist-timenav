@@ -1,3 +1,4 @@
 requests
 tabula-py
 Flask
+flask-cors
