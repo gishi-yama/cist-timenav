@@ -9,6 +9,11 @@ pdf_url = lib.HtmlScraper().pdf_url
 app = Flask(__name__)
 
 
+@app.route('/')
+def hello():
+    return 'hello'
+
+
 @app.route('/pdf_url')
 def url():
     return pdf_url
@@ -20,4 +25,4 @@ def pdf_bytes():
 
 
 if __name__ == '__main__':
-    app.run(port=8081, debug=True)
+    app.run(host='0.0.0.0', port=8081, debug=True)
