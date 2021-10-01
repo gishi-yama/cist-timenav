@@ -20,7 +20,7 @@ function App() {
                 <Box sx={{ m: 2 }} />
                 <Typography variant="h4">復路</Typography>
                 <Box sx={{ m: 1 }} />
-                <ReturnTimeTable />
+                {/*<ReturnTimeTable />*/}
             </Container>
         </div>
     );

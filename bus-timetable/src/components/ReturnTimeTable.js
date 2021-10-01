@@ -13,7 +13,7 @@ function ReturnTimeTable() {
     const [items, setItems] = useState({return: []})
 
     useEffect(() => {
-        fetch("http://localhost:8080/returns")
+        fetch("http://172.17.0.3:8080/returns")
             .then(res => res.json())
             .then(
                 (result) => {

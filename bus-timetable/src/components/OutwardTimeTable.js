@@ -12,8 +12,9 @@ function OutwardTimeTable() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [items, setItems] = useState({outward: []})
 
+    let url = "http://" + process.env.MINER + "/outwards";
     useEffect(() => {
-        fetch("http://localhost:8080/outwards")
+        fetch(url)
             .then(res => res.json())
             .then(
                 (result) => {
