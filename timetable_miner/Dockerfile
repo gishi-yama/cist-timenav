@@ -3,4 +3,5 @@ RUN apt-get update && dpkg --configure -a && mkdir /usr/share/man/man1 && apt-ge
 COPY ./ ./opt/app
 WORKDIR /opt/app
 RUN pip install -r requirements.txt
+EXPOSE 8080
 CMD ["python", "-u", "api.py"]

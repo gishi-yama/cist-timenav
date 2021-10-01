@@ -1,3 +1,4 @@
+import os
 import json
 
 import requests
@@ -6,7 +7,9 @@ from flask_cors import CORS
 
 from timetable_miner import lib
 
-url = 'http://172.17.0.2:8081/pdf/bytes'
+retriever = os.environ['RETRIEVER']
+
+url = 'http://{}/pdf/bytes'.format(retriever)
 response = requests.get(url)
 
 
