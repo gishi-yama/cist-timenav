@@ -13,7 +13,7 @@ function ReturnTimeTable() {
     const [items, setItems] = useState({return: []})
 
     useEffect(() => {
-        fetch("http://172.17.0.3:8080/returns")
+        fetch("/returns")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -27,7 +27,7 @@ function ReturnTimeTable() {
                     setError(error);
                 }
             )
-    },)
+    }, [])
 
     if (error) {
         return <div>Error: {error.message}</div>

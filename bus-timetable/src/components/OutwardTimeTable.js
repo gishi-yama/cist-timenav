@@ -7,19 +7,13 @@ import {TableRow} from "@mui/material";
 import {Paper} from "@mui/material";
 import {useEffect, useState} from "react";
 
-let url = "/outwards";
-
 function OutwardTimeTable() {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [items, setItems] = useState({outward: []})
 
     useEffect(() => {
-        fetch(url, {mode: "cors", credentials: "include",
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': '*',
-        }})
+        fetch("/outwards")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -33,7 +27,7 @@ function OutwardTimeTable() {
                     setError(error);
                 }
             )
-    },)
+    }, [])
 
     if (error) {
         return <div>Error: {error.message}</div>
