@@ -15,7 +15,7 @@ response = requests.get(url)
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
-CORS(app)
+# CORS(app)
 
 
 @app.route('/outwards', methods=['GET'])
