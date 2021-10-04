@@ -1,4 +1,4 @@
-import {Table} from "@mui/material";
+import {CircularProgress, Table} from "@mui/material";
 import {TableBody} from "@mui/material";
 import {TableCell} from "@mui/material";
 import {TableContainer} from "@mui/material";
@@ -32,7 +32,7 @@ function OutwardTimeTable() {
     if (error) {
         return <div>Error: {error.message}</div>
     } else if (!isLoaded) {
-        return <div>Loading...</div>
+        return <CircularProgress />
     } else {
         return (
             <TableContainer component={Paper}>
