@@ -2,9 +2,9 @@ import React from "react";
 import {Container} from "@mui/material";
 import {Box} from "@mui/material";
 import Header from "./components/Header";
-import {Typography} from "@mui/material";
 import OutwardTimeTable from "./components/OutwardTimeTable";
 import ReturnTimeTable from "./components/ReturnTimeTable";
+import Warning from "./components/Warning";
 
 function App() {
     return (
@@ -13,14 +13,15 @@ function App() {
                 <Header />
             </header>
             <Container maxWidth="xl">
+                <Box sx={{ m: 2}} />
+                <Warning />
                 <Box sx={{ m: 2 }} />
-                <Typography variant="h4">往路</Typography>
-                <Box sx={{ m: 1 }} />
                 <OutwardTimeTable />
                 <Box sx={{ m: 2 }} />
-                <Typography variant="h4">復路</Typography>
-                <Box sx={{ m: 1 }} />
                 <ReturnTimeTable />
+                <Box sx={{ m: 2 }} />
+                <Information />
+                <Box sx={{ m: 2 }} />
             </Container>
         </div>
     );

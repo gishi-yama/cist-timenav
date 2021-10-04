@@ -1,11 +1,10 @@
-import {CircularProgress, Table} from "@mui/material";
+import {Card, CardContent, CircularProgress, Table, Typography} from "@mui/material";
 import {TableBody} from "@mui/material";
 import {TableCell} from "@mui/material";
 import {TableContainer} from "@mui/material";
 import {TableHead} from "@mui/material";
 import {TableRow} from "@mui/material";
-import {Paper} from "@mui/material";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 function ReturnTimeTable() {
     const [error, setError] = useState(null);
@@ -35,30 +34,35 @@ function ReturnTimeTable() {
         return <CircularProgress />
     } else {
         return (
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="timetable">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>本部棟発</TableCell>
-                            <TableCell>研究実験棟着</TableCell>
-                            <TableCell>南千歳駅着</TableCell>
-                            <TableCell>千歳駅着</TableCell>
-                            <TableCell>備考</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {items.return.map(item => (
-                            <TableRow>
-                                <TableCell> {item.fromMainBldg} </TableCell>
-                                <TableCell> {item.toStudyBldg} </TableCell>
-                                <TableCell> {item.toMinamiChitoseSta} </TableCell>
-                                <TableCell> {item.toChitoseSta} </TableCell>
-                                <TableCell> {item.note} </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <Card>
+                <CardContent>
+                    <Typography variant="h5">復路</Typography>
+                    <TableContainer>
+                        <Table sx={{ minWidth: 650 }} aria-label="timetable">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>本部棟発</TableCell>
+                                    <TableCell>研究実験棟着</TableCell>
+                                    <TableCell>南千歳駅着</TableCell>
+                                    <TableCell>千歳駅着</TableCell>
+                                    <TableCell>備考</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {items.return.map(item => (
+                                    <TableRow>
+                                        <TableCell> {item.fromMainBldg} </TableCell>
+                                        <TableCell> {item.toStudyBldg} </TableCell>
+                                        <TableCell> {item.toMinamiChitoseSta} </TableCell>
+                                        <TableCell> {item.toChitoseSta} </TableCell>
+                                        <TableCell> {item.note} </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </CardContent>
+            </Card>
         )
     }
 }
