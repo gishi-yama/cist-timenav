@@ -20,8 +20,6 @@ function App() {
                 <Box sx={{ m: 2 }} />
                 <ReturnTimeTable />
                 <Box sx={{ m: 2 }} />
-                <Information />
-                <Box sx={{ m: 2 }} />
             </Container>
         </div>
     );
