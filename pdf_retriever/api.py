@@ -6,6 +6,11 @@ app = Flask(__name__)
 retriever = lib.Retriever()
 
 
+@app.route('/info')
+def inform():
+    return make_response(jsonify(retriever.inform()))
+
+
 @app.route('/url/oldest')
 def oldest_url():
     return make_response(jsonify({'url': retriever.retrieve_url(0)}))
