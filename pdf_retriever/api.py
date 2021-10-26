@@ -21,6 +21,16 @@ def url_by(number: int):
     return make_response(jsonify({'url': retriever.retrieve_url(number)}))
 
 
+@app.route('/title/oldest')
+def oldest_title():
+    return make_response(jsonify({'title': retriever.retrieve_title(0)}))
+
+
+@app.route('/title/<number>')
+def title_by(number: int):
+    return make_response(jsonify({'title': retriever.retrieve_title(number)}))
+
+
 @app.route('/bytes/oldest')
 def oldest_bytes():
     return app.response_class(retriever.retrieve_bytes(0), mimetype='text/pdf')
