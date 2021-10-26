@@ -17,8 +17,8 @@ def oldest_url():
 
 
 @app.route('/url/<number>')
-def url_by(number: int):
-    return make_response(jsonify({'url': retriever.retrieve_url(number)}))
+def url_by(number: str):
+    return make_response(jsonify({'url': retriever.retrieve_url(int(number))}))
 
 
 @app.route('/title/oldest')
@@ -27,8 +27,8 @@ def oldest_title():
 
 
 @app.route('/title/<number>')
-def title_by(number: int):
-    return make_response(jsonify({'title': retriever.retrieve_title(number)}))
+def title_by(number: str):
+    return make_response(jsonify({'title': retriever.retrieve_title(int(number))}))
 
 
 @app.route('/bytes/oldest')
@@ -37,8 +37,8 @@ def oldest_bytes():
 
 
 @app.route('/bytes/<number>')
-def bytes_by(number: int):
-    return app.response_class(retriever.retrieve_bytes(number), mimetype='text/pdf')
+def bytes_by(number: str):
+    return app.response_class(retriever.retrieve_bytes(int(number)), mimetype='text/pdf')
 
 
 if __name__ == '__main__':
