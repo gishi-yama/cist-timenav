@@ -1,27 +1,19 @@
-from flask import Flask
+from flask import Flask, make_response, jsonify
 
 from pdf_retriever import lib
 
-
-pdf_url = lib.HtmlScraper().pdf_url
-
-
 app = Flask(__name__)
+retriever = lib.Retriever()
 
 
-@app.route('/')
-def hello():
-    return 'hello'
+@app.route('/url/oldest')
+def oldest_url():
+    return make_response(jsonify({'url': retriever.retrieve_url(0)}))
 
 
-@app.route('/pdf_url')
-def url():
-    return pdf_url
-
-
-@app.route('/pdf/bytes')
-def pdf_bytes():
-    return lib.Retriever.retrieve(url())
+@app.route('/bytes/oldest')
+def oldest_bytes():
+    return app.response_class(retriever.retrieve_bytes(0), mimetype='text/pdf')
 
 
 if __name__ == '__main__':
