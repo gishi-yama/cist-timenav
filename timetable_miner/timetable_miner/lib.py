@@ -1,39 +1,35 @@
-from typing import Union
+from typing import List
 
-import numpy as np
+import pandas as pd
 import tabula
 
-from timetable_miner import config
+from timetable_miner import miner_util
 
 
-class PdfMiner:
+class PDFMiner:
 
-    def __init__(self, buf: bytes):
-        path = self.__buf_to_file(buf)
-        self.__dfs = tabula.read_pdf(path, lattice=True, pages='all')
-        self.__outward_df = self.__dfs[0][config.outward_columns]
-        self.__outward_df = self.__outward_df.rename(
-            columns={'千歳駅発': 'fromChitoseSta', '南千歳駅発': 'fromMinamiChitoseSta',
-                     '研究実験棟発': 'fromStudyBldg', '本部棟着': 'toMainBldg', '備考': 'note'})
-        self.__return_df = self.__dfs[1][config.return_columns]
-        self.__return_df = self.__return_df.rename(
-            columns={'千歳駅着': 'toChitoseSta', '南千歳駅着': 'toMinamiChitoseSta',
-                     '研究実験棟着': 'toStudyBldg', '本部棟発': 'fromMainBldg', '備考': 'note'})
-        self.__outwards = self.__outward_df.replace(np.nan, 'null').to_dict(orient='records')
-        self.__returns = self.__return_df.replace(np.nan, 'null').to_dict(orient='records')
+    def __init__(self, buffers: List[bytes]):
+        self.__buffers = buffers
+        self.__pdf_count = len(buffers)
+        self.__target_dfs: list = []
+        self.__target_df: pd.DataFrame = pd.DataFrame()
 
-    def __buf_to_file(self, buf: Union[str, bytes]) -> str:
-        with open('tmp.pdf', 'wb') as f:
-            f.write(buf)
-        return f.name
+    def read(self, ordinal: int) -> 'PDFMiner':
+        if 0 <= ordinal < self.__pdf_count:
+            buffer = self.__buffers[ordinal]
+            path = miner_util.bytes_to_pdf(buffer)
+            self.__target_dfs = tabula.read_pdf(path, lattice=True, pages='all')
+            return self
+        else:
+            raise IndexError(f'The ordinal {ordinal} is not enable.')
 
-    def outwards_and_returns(self) -> dict:
-        return {'outward': self.__outwards, 'return': self.__returns}
+    def replace(self, mappers: dict) -> 'PDFMiner':
+        for df in self.__target_dfs:
+            df.replace(mappers, inplace=True)
+        return self
 
-    @property
-    def outwards(self) -> dict:
-        return {"outward": self.__outwards}
+    def mine_to_school(self, columns: list = ['千歳駅発', '南千歳駅発', '研究実験棟発', '本部棟着', '備考']) -> pd.DataFrame:
+        return self.__target_dfs[0][columns]
 
-    @property
-    def returns(self) -> dict:
-        return {"return": self.__returns}
+    def mine_to_chitose(self, columns: list = ['本部棟発', '研究実験棟着', '南千歳駅着', '千歳駅着', '備考']) -> pd.DataFrame:
+        return self.__target_dfs[1][columns]
