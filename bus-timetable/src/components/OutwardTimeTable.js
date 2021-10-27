@@ -12,7 +12,7 @@ function OutwardTimeTable() {
     const [items, setItems] = useState({outward: []})
 
     useEffect(() => {
-        fetch("/outwards")
+        fetch("/to/school")
             .then(res => res.json())
             .then(
                 (result) => {

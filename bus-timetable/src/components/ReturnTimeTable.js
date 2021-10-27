@@ -12,7 +12,7 @@ function ReturnTimeTable() {
     const [items, setItems] = useState({return: []})
 
     useEffect(() => {
-        fetch("/returns")
+        fetch("/to/home")
             .then(res => res.json())
             .then(
                 (result) => {
