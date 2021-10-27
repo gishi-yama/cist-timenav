@@ -3,6 +3,7 @@ from flask import Flask, make_response, jsonify
 from pdf_retriever import lib
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 retriever = lib.Retriever()
 
 
