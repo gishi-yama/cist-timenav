@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from enum import Enum
 from typing import Tuple, Union
 
@@ -79,14 +80,16 @@ def oldest_to_school_table_as_ts():
     return to_school_table_as_ts('0')
 
 
-@app.route('/title/<number>')
-def title(number: str):
-    return make_response(jsonify({'results': titles[int(number)]}))
+@app.route('/date/<number>')
+def date(number: str):
+    date_text = re.search('（.*?）', titles[number]).group(0)
+    date_text = date_text.replace('（', '').replace('）', '')
+    return make_response(jsonify({'results': date_text}))
 
 
-@app.route('/title/oldest')
-def oldest_title():
-    return title('0')
+@app.route('/date/oldest')
+def oldest_date():
+    return date('0')
 
 
 @app.route('/table/to/home/<number>')
