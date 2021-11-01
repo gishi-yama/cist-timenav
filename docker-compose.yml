@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
     container_name: pdf
     ports:
-      - "8081:8081"
+      - "8082:8082"
 
   miner:
     restart: always
@@ -22,9 +22,9 @@ services:
       dockerfile: Dockerfile
     container_name: miner
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
-      RETRIEVER: pdf:8081
+      RETRIEVER: pdf:8082
 
   bus:
     restart: unless-stopped
@@ -35,7 +35,7 @@ services:
       dockerfile: Dockerfile
     container_name: bus
     ports:
-      - "3001:3001"
+      - "3000:3000"
 
 networks:
   cist:
