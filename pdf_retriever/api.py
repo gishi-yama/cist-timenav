@@ -1,3 +1,5 @@
+import re
+
 from flask import Flask, make_response, jsonify
 
 from pdf_retriever import lib
@@ -22,14 +24,24 @@ def url_by(number: str):
     return make_response(jsonify({'url': retriever.retrieve_url(int(number))}))
 
 
-@app.route('/title/oldest')
-def oldest_title():
-    return make_response(jsonify({'title': retriever.retrieve_title(0)}))
+@app.route('/name/<number>')
+def name_by(number: str):
+    return make_response(jsonify({'name': retriever.retrieve_title(int(number))}))
+
+
+@app.route('/name/oldest')
+def oldest_name():
+    return make_response(jsonify({'name': retriever.retrieve_title(0)}))
 
 
 @app.route('/title/<number>')
 def title_by(number: str):
-    return make_response(jsonify({'title': retriever.retrieve_title(int(number))}))
+    return make_response(jsonify({'title': re.search('.*?）', retriever.retrieve_title(int(number))).group(0)}))
+
+
+@app.route('/title/oldest')
+def oldest_title():
+    return make_response(jsonify({'title': re.search('.*?）', retriever.retrieve_title(0)).group(0)}))
 
 
 @app.route('/bytes/oldest')
