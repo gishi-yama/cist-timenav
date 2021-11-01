@@ -2,9 +2,8 @@ import React from "react";
 import {Container} from "@mui/material";
 import {Box} from "@mui/material";
 import Header from "./components/Header";
-import OutwardTimeTable from "./components/OutwardTimeTable";
-import ReturnTimeTable from "./components/ReturnTimeTable";
 import Warning from "./components/Warning";
+import TimeTable from "./components/TimeTable";
 
 function App() {
     return (
@@ -16,9 +15,9 @@ function App() {
                 <Box sx={{ m: 2}} />
                 <Warning />
                 <Box sx={{ m: 2 }} />
-                <OutwardTimeTable />
+                <TimeTable direction="school" />
                 <Box sx={{ m: 2 }} />
-                <ReturnTimeTable />
+                <TimeTable direction="chitose" />
                 <Box sx={{ m: 2 }} />
             </Container>
         </div>
