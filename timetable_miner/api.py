@@ -35,7 +35,7 @@ class Key(Enum):
 class Column:
     TO_SCHOOL = {'千歳駅発': Key.CHITOSE.value, '南千歳駅発': Key.MINAMI_CHITOSE.value,
                  '研究実験棟発': Key.STUDY_BUILDING.value, '本部棟着': Key.MAIN_BUILDING.value, '備考': Key.NOTE.value}
-    TO_HOME = {'本部棟発': Key.MAIN_BUILDING.value, '研究実験棟着': Key.STUDY_BUILDING.value,
+    TO_CHITOSE = {'本部棟発': Key.MAIN_BUILDING.value, '研究実験棟着': Key.STUDY_BUILDING.value,
                '南千歳駅着': Key.MINAMI_CHITOSE.value, '千歳駅着': Key.CHITOSE.value, '備考': Key.NOTE.value}
 
 
@@ -92,27 +92,27 @@ def oldest_date():
     return date('0')
 
 
-@app.route('/table/to/home/<number>')
-def to_home_table(number: str):
-    to_home_df = pdf_miners[int(number)].to_home_df[Column.TO_HOME.keys()].rename(columns=Column.TO_HOME)
-    return make_response(jsonify({'results': to_home_df.to_dict(orient='records')}))
+@app.route('/table/to/chitose/<number>')
+def to_chitose_table(number: str):
+    to_chitose_df = pdf_miners[int(number)].to_chitose_df[Column.TO_CHITOSE.keys()].rename(columns=Column.TO_CHITOSE)
+    return make_response(jsonify({'results': to_chitose_df.to_dict(orient='records')}))
 
 
-@app.route('/table/to/home/oldest')
-def oldest_to_home_table():
-    return to_school_table('0')
+@app.route('/table/to/chitose/oldest')
+def oldest_to_chitose_table():
+    return to_chitose_table('0')
 
 
-@app.route('/table/to/home/<number>/timestamp')
-def to_home_table_as_ts(number: str):
-    to_home_df = pdf_miners[int(number)].to_home_df[Column.TO_HOME.keys()].rename(columns=Column.TO_HOME)
-    to_home_df[Key.times()] = to_home_df[Key.times()].applymap(lambda x: str_to_timestamp(x)).replace({pd.NaT: None})
-    return make_response(jsonify({'results': to_home_df.to_dict(orient='records')}))
+@app.route('/table/to/chitose/<number>/timestamp')
+def to_chitose_table_as_ts(number: str):
+    to_chitose_df = pdf_miners[int(number)].to_chitose_df[Column.TO_CHITOSE.keys()].rename(columns=Column.TO_CHITOSE)
+    to_chitose_df[Key.times()] = to_chitose_df[Key.times()].applymap(lambda x: str_to_timestamp(x)).replace({pd.NaT: None})
+    return make_response(jsonify({'results': to_chitose_df.to_dict(orient='records')}))
 
 
-@app.route('/table/to/home/oldest/timestamp')
-def oldest_to_home_table_as_ts():
-    return to_home_table_as_ts('0')
+@app.route('/table/to/chitose/oldest/timestamp')
+def oldest_to_chitose_table_as_ts():
+    return to_chitose_table_as_ts('0')
 
 
 def str_to_timestamp(str_formed_time: str) -> Union[None, pd.Timestamp]:
