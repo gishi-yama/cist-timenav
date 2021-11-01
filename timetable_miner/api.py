@@ -1,6 +1,8 @@
+import json
 import os
+from enum import Enum
+from typing import Tuple, Union
 
-import numpy as np
 import pandas as pd
 import requests
 from flask import Flask, jsonify, make_response
@@ -17,54 +19,108 @@ app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
 
-def translate_key_to_eng(df: pd.DataFrame) -> pd.DataFrame:
-    df = df.rename(columns={
-        '千歳駅発': 'chitose', '南千歳駅発': 'minamiChitose', '研究実験棟発': 'studyBldg', '本部棟着': 'mainBldg',
-        '本部棟発': 'mainBldg', '研究実験棟着': 'studyBldg', '南千歳駅着': 'minamiChitose', '千歳駅着': 'chitose',
-        '備考': 'note'})
-    return df
+class Key(Enum):
+    CHITOSE = 'chitose'
+    MINAMI_CHITOSE = 'minamiChitose'
+    STUDY_BUILDING = 'studyBldg'
+    MAIN_BUILDING = 'mainBldg'
+    NOTE = 'note'
+
+    @staticmethod
+    def times():
+        return [Key.CHITOSE.value, Key.MINAMI_CHITOSE.value, Key.STUDY_BUILDING.value, Key.MAIN_BUILDING.value]
 
 
-def str_to_timestamp(str_formed_time: str, year: int = None, month: int = None, day: int = None) -> pd.Timestamp:
-    if str_formed_time == '-':
+class Column:
+    TO_SCHOOL = {'千歳駅発': Key.CHITOSE.value, '南千歳駅発': Key.MINAMI_CHITOSE.value,
+                 '研究実験棟発': Key.STUDY_BUILDING.value, '本部棟着': Key.MAIN_BUILDING.value, '備考': Key.NOTE.value}
+    TO_HOME = {'本部棟発': Key.MAIN_BUILDING.value, '研究実験棟着': Key.STUDY_BUILDING.value,
+               '南千歳駅着': Key.MINAMI_CHITOSE.value, '千歳駅着': Key.CHITOSE.value, '備考': Key.NOTE.value}
+
+
+def initialize() -> Tuple[dict, dict]:
+    request_url = url + 'info'
+    information = json.loads(requests.get(request_url).content)
+    miners = {}
+    for ordinal, _ in information.items():
+        request_url = url + 'bytes/' + ordinal
+        miners[int(ordinal)] = lib.PDFMiner(requests.get(request_url).content)
+    return information, miners
+
+
+titles, pdf_miners = initialize()
+
+
+@app.route('/info')
+def inform():
+    return make_response(jsonify({'results': titles}))
+
+
+@app.route('/table/to/school/<number>')
+def to_school_table(number: str):
+    to_school_df = pdf_miners[int(number)].to_school_df[Column.TO_SCHOOL.keys()].rename(columns=Column.TO_SCHOOL)
+    return make_response(jsonify({'results': to_school_df.to_dict(orient='records')}))
+
+
+@app.route('/table/to/school/oldest')
+def oldest_to_school_table():
+    return to_school_table('0')
+
+
+@app.route('/table/to/school/<number>/timestamp')
+def to_school_table_as_ts(number: str):
+    to_school_df = pdf_miners[int(number)].to_school_df[Column.TO_SCHOOL.keys()].rename(columns=Column.TO_SCHOOL)
+    to_school_df[Key.times()] = to_school_df[Key.times()].applymap(lambda x: str_to_timestamp(x)).replace({pd.NaT: None})
+    return make_response(jsonify({'results': to_school_df.to_dict(orient='records')}))
+
+
+@app.route('/table/to/school/oldest/timestamp')
+def oldest_to_school_table_as_ts():
+    return to_school_table_as_ts('0')
+
+
+@app.route('/title/<number>')
+def title(number: str):
+    return make_response(jsonify({'results': titles[int(number)]}))
+
+
+@app.route('/title/oldest')
+def oldest_title():
+    return title('0')
+
+
+@app.route('/table/to/home/<number>')
+def to_home_table(number: str):
+    to_home_df = pdf_miners[int(number)].to_home_df[Column.TO_HOME.keys()].rename(columns=Column.TO_HOME)
+    return make_response(jsonify({'results': to_home_df.to_dict(orient='records')}))
+
+
+@app.route('/table/to/home/oldest')
+def oldest_to_home_table():
+    return to_school_table('0')
+
+
+@app.route('/table/to/home/<number>/timestamp')
+def to_home_table_as_ts(number: str):
+    to_home_df = pdf_miners[int(number)].to_home_df[Column.TO_HOME.keys()].rename(columns=Column.TO_HOME)
+    to_home_df[Key.times()] = to_home_df[Key.times()].applymap(lambda x: str_to_timestamp(x)).replace({pd.NaT: None})
+    return make_response(jsonify({'results': to_home_df.to_dict(orient='records')}))
+
+
+@app.route('/table/to/home/oldest/timestamp')
+def oldest_to_home_table_as_ts():
+    return to_home_table_as_ts('0')
+
+
+def str_to_timestamp(str_formed_time: str) -> Union[None, pd.Timestamp]:
+    if str_formed_time is None:
         return str_formed_time
-    timestamp = pd.Timestamp.now()
-    if year is not None and month is not None and day is not None:
-        timestamp = pd.Timestamp(year=year, month=month, day=day)
+    timestamp = pd.Timestamp(year=1998, month=3, day=24, hour=0, minute=0, second=0)
     time = pd.to_datetime(str_formed_time, format='%H:%M')
     timestamp = timestamp.replace(hour=time.hour, minute=time.minute, second=0, microsecond=0)
+    if timestamp is pd.NaT:
+        return str_formed_time
     return timestamp
-
-
-@app.route('/to/school/oldest')
-def oldest_to_school():
-    request_url = url + 'bytes/oldest'
-    buffers = [requests.get(request_url).content]
-    df = lib.PDFMiner(buffers).read(0).replace({'―': '-', np.NAN: '-'}).mine_to_school()
-    df['備考'] = df['備考'].apply(lambda x: str(x).replace('\r', '\n'))
-    df = translate_key_to_eng(df)
-    return make_response(jsonify({'results': df.to_dict(orient='records')}))
-
-
-@app.route('/to/school/oldest/timestamp')
-def oldest_to_school_with_timestamp():
-    request_url = url + 'bytes/oldest'
-    buffers = [requests.get(request_url).content]
-    df = lib.PDFMiner(buffers).read(0).replace({'―': '-', np.NAN: '-'}).mine_to_school()
-    df['備考'] = df['備考'].apply(lambda x: str(x).replace('\r', '\n'))
-    df[['千歳駅発', '南千歳駅発', '研究実験棟発', '本部棟着']] = df[['千歳駅発', '南千歳駅発', '研究実験棟発', '本部棟着']].applymap(lambda x: str_to_timestamp(x))
-    df = translate_key_to_eng(df)
-    return make_response(jsonify({'results': df.to_dict(orient='records')}))
-
-
-@app.route('/to/chitose/oldest')
-def oldest_to_chitose():
-    request_url = url + 'bytes/oldest'
-    buffers = [requests.get(request_url).content]
-    df = lib.PDFMiner(buffers).read(0).replace({'―': '-', np.NAN: '-'}).mine_to_chitose()
-    df['備考'] = df['備考'].apply(lambda x: str(x).replace('\r', '\n'))
-    df = translate_key_to_eng(df)
-    return make_response(jsonify({'results': df.to_dict(orient='records')}))
 
 
 if __name__ == '__main__':
