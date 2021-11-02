@@ -1,19 +1,28 @@
 # pdf_retriever
 
-公立千歳科学技術大学の[大学へのアクセス](https://www.chitose.ac.jp/info/access)からPDFを取得する。現在はHTML上で最古のPDFを取得する。
+公立千歳科学技術大学の[大学へのアクセス](https://www.chitose.ac.jp/info/access) からPDFを取得する。このプロジェクトはAPIを提供する。
 
-## API
-
-APIを呼び出すには、以下のパターンのURLにアクセスする。
+### ベースURL
 
 ```
-http://localhost:8081/<route>
+https://localhost:8082
 ```
 
-### `/pdf_url`
+#### `/info`
+「大学へのアクセス」に表示されているPDFの数とタイトルを取得する。
 
-HTML上で最古のPDFのURLを取得する。
 
-### `/pdf/bytes`
+#### `/url/<number>`
+「大学へのアクセス」の上から `<number>` 番目に表示されているPDFのURLを取得する。 `<number>` は0から数える。
 
-HTML上で最古のPDFをbytes型で取得する。
+
+#### `/name/<number>`
+「大学へのアクセス」の上から `<number>` 番目に表示されているPDFの表示名を取得する。 `<number>` は0から数える。
+
+
+#### `/title/<number>`
+「大学へのアクセス」の上から `<number>` 番目に表示されているPDFファイルの名称を取得する。 `<number>` は0から数える。
+
+
+#### `/bytes/<number>`
+「大学へのアクセス」の上から `<number>` 番目のPDFファイルを取得する。 `<number>` は0から数える。
