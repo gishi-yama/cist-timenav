@@ -30,9 +30,9 @@ function TimeTableTitle(props) {
         return <CircularProgress />
     } else {
         if (props.direction === "school") {
-            return <Typography variant="h6">往路（{ item.results }）</Typography>
-        } else {
-            return <Typography variant="h6">復路（{ item.results }）</Typography>
+            return <Typography variant="subtitle1">往路（{ item.results }）</Typography>
+        } else if (props.direction === "chitose") {
+            return <Typography variant="subtitle1">復路（{ item.results }）</Typography>
         }
     }
 }
