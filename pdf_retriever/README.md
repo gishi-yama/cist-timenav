@@ -26,3 +26,7 @@ https://localhost:8082
 
 #### `/bytes/<number>`
 「大学へのアクセス」の上から `<number>` 番目のPDFファイルを取得する。 `<number>` は0から数える。
+
+#### 備考
+
+- `<number>` は `oldest` とすることで一番上のものを取得できる。

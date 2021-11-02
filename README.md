@@ -19,22 +19,21 @@ https://dia.spub.chitose.ac.jp/api/pdf
 #### `/info`
 「大学へのアクセス」に表示されているPDFの数とタイトルを取得する。
 
-
 #### `/url/<number>`
 「大学へのアクセス」の上から `<number>` 番目に表示されているPDFのURLを取得する。 `<number>` は0から数える。
-
 
 #### `/name/<number>`
 「大学へのアクセス」の上から `<number>` 番目に表示されているPDFの表示名を取得する。 `<number>` は0から数える。
 
-
 #### `/title/<number>`
 「大学へのアクセス」の上から `<number>` 番目に表示されているPDFファイルの名称を取得する。 `<number>` は0から数える。
-
 
 #### `/bytes/<number>`
 「大学へのアクセス」の上から `<number>` 番目のPDFファイルを取得する。 `<number>` は0から数える。
 
+#### 備考
+
+- `<number>` は `oldest` とすることで一番上のものを取得できる。
 
 
 ## [timetable_miner](https://github.com/k-oketa/cist-timenav/tree/develop/timetable_miner)
