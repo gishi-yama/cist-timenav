@@ -12,7 +12,7 @@ function App() {
                 <Header />
             </header>
             <Container maxWidth="xl">
-                <Box sx={{ m: 2}} />
+                <Box sx={{ m: 2 }} />
                 <Warning />
                 <Box sx={{ m: 2 }} />
                 <TimeTable direction="school" />
