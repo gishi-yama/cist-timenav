@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  pdf:
+    restart: always
+    networks:
+      - cist
+    build:
+      context: "./pdf_retriever"
+      dockerfile: Dockerfile
+    container_name: pdf
+    ports:
+      - "8082:8082"
+
+  miner:
+    restart: always
+    depends_on:
+      - pdf
+    networks:
+      - cist
+    build:
+      context: "./timetable_miner"
+      dockerfile: Dockerfile
+    container_name: miner
+    ports:
+      - "8081:8081"
+    environment:
+      RETRIEVER: pdf:8082
+
+  bus:
+    restart: unless-stopped
+    networks:
+      - cist
+    build:
+      context: "./bus-timetable"
+      dockerfile: Dockerfile
+    container_name: bus
+    ports:
+      - "3000:3000"
+
+networks:
+  cist:
+    driver: bridge
